@@ -1,7 +1,11 @@
 
 // #region Import Directives
 
+/// <amd-dependency path="typeahead.js"/>
+
+//import jquery = require("jquery");
 import knockout = require("knockout");
+//import bloodhound = require("bloodhound");
 
 // #endregion
 
