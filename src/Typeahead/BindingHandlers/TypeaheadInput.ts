@@ -38,21 +38,8 @@ knockout.bindingHandlers["typeahead"] = {
         var limit: number | undefined = allBindingsAccessor.get("limit");
         var display: string | ((obj: any) => string) | undefined = allBindingsAccessor.get("display");
 
-        // Gets the options for the Bloodhound suggestion engine
-        var sufficient: number | undefined = allBindingsAccessor.get("sufficient");
-        var local: Array<any> = allBindingsAccessor.get("local");
-        var prefetch: string | Bloodhound.PrefetchOptions<any> | undefined = allBindingsAccessor.get("prefetch");
-        var remote: string | Bloodhound.RemoteOptions<any> | undefined = allBindingsAccessor.get("remote");
-
-        // Creates the Bloodhound suggestion engine
-        var bloodhound = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.whitespace,
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            sufficient: sufficient,
-            local: local,
-            prefetch: prefetch,
-            remote: remote
-        });
+        // Gets the suggestion source for the typeahead dataset
+        var source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void) = allBindingsAccessor.get("source");
 
         // Initializes the typeahead input
         typeaheadInput.typeahead<string>({
@@ -61,7 +48,7 @@ knockout.bindingHandlers["typeahead"] = {
             minLength: minLength,
             classNames: classNames
         }, [{
-            source: bloodhound,
+            source: source,
             async: async,
             name: name,
             limit: limit,
