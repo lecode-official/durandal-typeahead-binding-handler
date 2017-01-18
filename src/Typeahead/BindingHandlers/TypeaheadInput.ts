@@ -72,8 +72,18 @@ knockout.bindingHandlers["typeahead"] = {
      */
     update: (element: any, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor) => {
         
-        // Sets the value of the typeahead input to the new value of the binding
+        // Retrieves the display name based on the display option (which can either be a function that retrieves the name or a path string)
         var currentValue: any = knockout.unwrap(valueAccessor());
+        var display = allBindingsAccessor.get("display");
+        if (typeof(display) === "string") {
+            for (var part in display.split(".")) {
+                currentValue = currentValue[part];
+            }
+        } else {
+            currentValue = display(currentValue);
+        }
+
+        // Sets the value of the typeahead input to the new value of the binding
         jquery(element).typeahead("val", currentValue);
     }
 };
