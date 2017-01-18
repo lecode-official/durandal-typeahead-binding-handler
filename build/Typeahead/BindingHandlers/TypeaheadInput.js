@@ -1,7 +1,6 @@
 // #region Import Directives
-define(["require", "exports", "jquery", "knockout", "typeahead.js"], function (require, exports, jquery, knockout) {
+define(["require", "exports", "jquery", "knockout", "typeahead.js", "bloodhound"], function (require, exports, jquery, knockout) {
     "use strict";
-    //import bloodhound = require("bloodhound");
     // #endregion
     /**
      * Represents a binding handler for using Twitter typeahead.js and the Bloodhound suggestion engine.
@@ -27,20 +26,8 @@ define(["require", "exports", "jquery", "knockout", "typeahead.js"], function (r
             var name = allBindingsAccessor.get("name");
             var limit = allBindingsAccessor.get("limit");
             var display = allBindingsAccessor.get("display");
-            // Gets the options for the Bloodhound suggestion engine
-            var sufficient = allBindingsAccessor.get("sufficient");
-            var local = allBindingsAccessor.get("local");
-            var prefetch = allBindingsAccessor.get("prefetch");
-            var remote = allBindingsAccessor.get("remote");
-            // Creates the Bloodhound suggestion engine
-            var bloodhound = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.whitespace,
-                queryTokenizer: Bloodhound.tokenizers.whitespace,
-                sufficient: sufficient,
-                local: local,
-                prefetch: prefetch,
-                remote: remote
-            });
+            // Gets the suggestion source for the typeahead dataset
+            var source = allBindingsAccessor.get("source");
             // Initializes the typeahead input
             typeaheadInput.typeahead({
                 highlight: highlight,
@@ -48,7 +35,7 @@ define(["require", "exports", "jquery", "knockout", "typeahead.js"], function (r
                 minLength: minLength,
                 classNames: classNames
             }, [{
-                    source: bloodhound,
+                    source: source,
                     async: async,
                     name: name,
                     limit: limit,
