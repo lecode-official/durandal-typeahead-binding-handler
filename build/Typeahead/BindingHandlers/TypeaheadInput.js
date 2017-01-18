@@ -1,5 +1,5 @@
 // #region Import Directives
-define(["require", "exports", "jquery", "knockout", "typeahead.js", "bloodhound"], function (require, exports, jquery, knockout) {
+define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], function (require, exports, jquery, knockout) {
     "use strict";
     // #endregion
     /**
@@ -27,7 +27,7 @@ define(["require", "exports", "jquery", "knockout", "typeahead.js", "bloodhound"
             var limit = allBindingsAccessor.get("limit");
             var display = allBindingsAccessor.get("display");
             // Gets the suggestion source for the typeahead dataset
-            var source = allBindingsAccessor.get("source");
+            var source = knockout.unwrap(allBindingsAccessor.get("source"));
             // Initializes the typeahead input
             typeaheadInput.typeahead({
                 highlight: highlight,
