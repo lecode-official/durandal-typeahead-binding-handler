@@ -1,7 +1,7 @@
 
 // #region Import Directives
 
-/// <amd-dependency path="typeahead.js"/>
+/// <amd-dependency path="typeahead"/>
 /// <amd-dependency path="bloodhound"/>
 
 import jquery = require("jquery");
