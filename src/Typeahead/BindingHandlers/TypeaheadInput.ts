@@ -39,7 +39,7 @@ knockout.bindingHandlers["typeahead"] = {
         var display: string | ((obj: any) => string) | undefined = allBindingsAccessor.get("display");
 
         // Gets the suggestion source for the typeahead dataset
-        var source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void) = allBindingsAccessor.get("source");
+        var source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void) = knockout.unwrap(allBindingsAccessor.get("source"));
 
         // Initializes the typeahead input
         typeaheadInput.typeahead<string>({
