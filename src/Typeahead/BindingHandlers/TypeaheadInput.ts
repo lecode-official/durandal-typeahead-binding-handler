@@ -57,8 +57,17 @@ knockout.bindingHandlers["typeahead"] = {
             templates: templates
         }]);
 
+        // Triggers the change event
+        typeaheadInput.on("typeahead:autocomplete", function () {
+            typeaheadInput.change();
+        });
+        typeaheadInput.on("typeahead:cursorchange", function () {
+            typeaheadInput.change();
+        });
+
         // Subscribes to the select event of the typeahead input, which is called, when the user selects a suggestion
         typeaheadInput.on("typeahead:select", (event: JQueryEventObject, suggestion: any) => {
+            typeaheadInput.change();
 
             // Updates the value to which the typeahead input was bound
             if (knockout.isObservable(valueAccessor())) {
