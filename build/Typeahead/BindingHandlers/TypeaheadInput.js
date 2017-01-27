@@ -44,8 +44,13 @@ define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], 
             // Subscribes to the select event of the typeahead input, which is called, when the user selects a suggestion
             typeaheadInput.on("typeahead:select", function (event, suggestion) {
                 // Updates the value to which the typeahead input was bound
-                var value = valueAccessor();
-                value(suggestion);
+                if (knockout.isObservable(valueAccessor())) {
+                    var value = valueAccessor();
+                    value(suggestion);
+                }
+                else {
+                    valueAccessor()(suggestion);
+                }
             });
         },
         /**
@@ -55,19 +60,21 @@ define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], 
          * @param {KnockoutAllBindingsAccessor} allBindingsAccessor A JavaScript object that you can use to access all the model values bound to this DOM element.
          */
         update: function (element, valueAccessor, allBindingsAccessor) {
-            // Retrieves the display name based on the display option (which can either be a function that retrieves the name or a path string)
-            var currentValue = knockout.unwrap(valueAccessor());
-            var display = allBindingsAccessor.get("display");
-            if (typeof (display) === "string") {
-                for (var part in display.split(".")) {
-                    currentValue = currentValue[part];
+            if (knockout.isObservable(valueAccessor())) {
+                // Retrieves the display name based on the display option (which can either be a function that retrieves the name or a path string)
+                var currentValue = knockout.unwrap(valueAccessor());
+                var display = allBindingsAccessor.get("display");
+                if (typeof (display) === "string") {
+                    for (var part in display.split(".")) {
+                        currentValue = currentValue[part];
+                    }
                 }
+                else {
+                    currentValue = display(currentValue);
+                }
+                // Sets the value of the typeahead input to the new value of the binding
+                jquery(element).typeahead("val", currentValue);
             }
-            else {
-                currentValue = display(currentValue);
-            }
-            // Sets the value of the typeahead input to the new value of the binding
-            jquery(element).typeahead("val", currentValue);
         }
     };
 });
