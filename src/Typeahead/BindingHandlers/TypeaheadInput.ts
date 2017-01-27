@@ -31,6 +31,7 @@ knockout.bindingHandlers["typeahead"] = {
         var hint: boolean | undefined = allBindingsAccessor.get("hint");
         var minLength: number | undefined = allBindingsAccessor.get("minLength");
         var classNames: Twitter.Typeahead.ClassNames | undefined = allBindingsAccessor.get("classNames");
+        var templates: Twitter.Typeahead.Templates<any> | undefined = allBindingsAccessor.get("templates");
 
         // Gets the options for the typeahead dataset
         var async: boolean | undefined = allBindingsAccessor.get("async");
@@ -52,7 +53,8 @@ knockout.bindingHandlers["typeahead"] = {
             async: async,
             name: name,
             limit: limit,
-            display: display
+            display: display,
+            templates: templates
         }]);
 
         // Subscribes to the select event of the typeahead input, which is called, when the user selects a suggestion

@@ -21,6 +21,7 @@ define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], 
             var hint = allBindingsAccessor.get("hint");
             var minLength = allBindingsAccessor.get("minLength");
             var classNames = allBindingsAccessor.get("classNames");
+            var templates = allBindingsAccessor.get("templates");
             // Gets the options for the typeahead dataset
             var async = allBindingsAccessor.get("async");
             var name = allBindingsAccessor.get("name");
@@ -39,7 +40,8 @@ define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], 
                     async: async,
                     name: name,
                     limit: limit,
-                    display: display
+                    display: display,
+                    templates: templates
                 }]);
             // Subscribes to the select event of the typeahead input, which is called, when the user selects a suggestion
             typeaheadInput.on("typeahead:select", function (event, suggestion) {
