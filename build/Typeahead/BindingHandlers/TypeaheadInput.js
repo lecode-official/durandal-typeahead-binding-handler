@@ -13,35 +13,24 @@ define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], 
          * @param {KnockoutAllBindingsAccessor} allBindingsAccessor A JavaScript object that you can use to access all the model values bound to this DOM element.
          */
         init: function (element, valueAccessor, allBindingsAccessor) {
+            // Retrieves the options from the parameter of the binding
+            var options = knockout.utils.unwrapObservable(valueAccessor());
             // Prevents the input from which the typeahead is created from autocompleting itself
             var typeaheadInput = jquery(element);
             typeaheadInput.attr("autocomplete", "off");
-            // Gets the options for the typeahead input
-            var highlight = allBindingsAccessor.get("highlight");
-            var hint = allBindingsAccessor.get("hint");
-            var minLength = allBindingsAccessor.get("minLength");
-            var classNames = allBindingsAccessor.get("classNames");
-            var templates = allBindingsAccessor.get("templates");
-            // Gets the options for the typeahead dataset
-            var async = allBindingsAccessor.get("async");
-            var name = allBindingsAccessor.get("name");
-            var limit = allBindingsAccessor.get("limit");
-            var display = allBindingsAccessor.get("display");
-            // Gets the suggestion source for the typeahead dataset
-            var source = knockout.unwrap(allBindingsAccessor.get("source"));
             // Initializes the typeahead input
             typeaheadInput.typeahead({
-                highlight: highlight,
-                hint: hint,
-                minLength: minLength,
-                classNames: classNames
+                highlight: options.highlight,
+                hint: options.hint,
+                minLength: options.minLength,
+                classNames: options.classNames
             }, [{
-                    source: source,
-                    async: async,
-                    name: name,
-                    limit: limit,
-                    display: display,
-                    templates: templates
+                    source: options.source,
+                    async: options.async,
+                    name: options.name,
+                    limit: options.limit || 9999,
+                    display: options.display,
+                    templates: options.templates
                 }]);
             // Triggers the change event
             typeaheadInput.on("typeahead:autocomplete", function () {
@@ -54,12 +43,11 @@ define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], 
             typeaheadInput.on("typeahead:select", function (event, suggestion) {
                 typeaheadInput.change();
                 // Updates the value to which the typeahead input was bound
-                if (knockout.isObservable(valueAccessor())) {
-                    var value = valueAccessor();
-                    value(suggestion);
+                if (!!options.value) {
+                    options.value(suggestion);
                 }
-                else {
-                    valueAccessor()(suggestion);
+                if (!!options.change) {
+                    options.change(suggestion);
                 }
             });
         },
@@ -70,17 +58,19 @@ define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], 
          * @param {KnockoutAllBindingsAccessor} allBindingsAccessor A JavaScript object that you can use to access all the model values bound to this DOM element.
          */
         update: function (element, valueAccessor, allBindingsAccessor) {
-            if (knockout.isObservable(valueAccessor())) {
+            // Retrieves the options from the parameter of the binding
+            var options = knockout.utils.unwrapObservable(valueAccessor());
+            // Checks whether the binding is updated
+            if (!!options.value) {
                 // Retrieves the display name based on the display option (which can either be a function that retrieves the name or a path string)
-                var currentValue = knockout.unwrap(valueAccessor());
-                var display = allBindingsAccessor.get("display");
-                if (typeof (display) === "string") {
-                    for (var part in display.split(".")) {
+                var currentValue = options.value();
+                if (typeof (options.display) === "string") {
+                    for (var part in options.display.split(".")) {
                         currentValue = currentValue[part];
                     }
                 }
                 else {
-                    currentValue = display(currentValue);
+                    currentValue = options.display(currentValue);
                 }
                 // Sets the value of the typeahead input to the new value of the binding
                 jquery(element).typeahead("val", currentValue);

@@ -22,39 +22,26 @@ knockout.bindingHandlers["typeahead"] = {
      */
     init: (element: any, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor) => {
 
+        // Retrieves the options from the parameter of the binding
+        var options: { value: KnockoutObservable<string>, change: (value: string) => void, source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void), highlight: boolean, hint: boolean, minLength: number, classNames: Twitter.Typeahead.ClassNames, templates: Twitter.Typeahead.Templates<any>, async: boolean, name: string, limit: number, display: string | ((obj: any) => string) } = <{ value: KnockoutObservable<string>, change: (value: string) => void, source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void), highlight: boolean, hint: boolean, minLength: number, classNames: Twitter.Typeahead.ClassNames, templates: Twitter.Typeahead.Templates<any>, async: boolean, name: string, limit: number, display: string | ((obj: any) => string) }>knockout.utils.unwrapObservable(valueAccessor());
+
         // Prevents the input from which the typeahead is created from autocompleting itself
         var typeaheadInput = jquery(element);
         typeaheadInput.attr("autocomplete", "off")
 
-        // Gets the options for the typeahead input
-        var highlight: boolean | undefined = allBindingsAccessor.get("highlight");
-        var hint: boolean | undefined = allBindingsAccessor.get("hint");
-        var minLength: number | undefined = allBindingsAccessor.get("minLength");
-        var classNames: Twitter.Typeahead.ClassNames | undefined = allBindingsAccessor.get("classNames");
-        var templates: Twitter.Typeahead.Templates<any> | undefined = allBindingsAccessor.get("templates");
-
-        // Gets the options for the typeahead dataset
-        var async: boolean | undefined = allBindingsAccessor.get("async");
-        var name: string | undefined = allBindingsAccessor.get("name");
-        var limit: number | undefined = allBindingsAccessor.get("limit");
-        var display: string | ((obj: any) => string) | undefined = allBindingsAccessor.get("display");
-
-        // Gets the suggestion source for the typeahead dataset
-        var source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void) = knockout.unwrap(allBindingsAccessor.get("source"));
-
         // Initializes the typeahead input
         typeaheadInput.typeahead<string>({
-            highlight: highlight,
-            hint: hint,
-            minLength: minLength,
-            classNames: classNames
+            highlight: options.highlight,
+            hint: options.hint,
+            minLength: options.minLength,
+            classNames: options.classNames
         }, [{
-            source: source,
-            async: async,
-            name: name,
-            limit: limit,
-            display: display,
-            templates: templates
+            source: options.source,
+            async: options.async,
+            name: options.name,
+            limit: options.limit || 9999,
+            display: options.display,
+            templates: options.templates
         }]);
 
         // Triggers the change event
@@ -70,11 +57,11 @@ knockout.bindingHandlers["typeahead"] = {
             typeaheadInput.change();
 
             // Updates the value to which the typeahead input was bound
-            if (knockout.isObservable(valueAccessor())) {
-                var value: KnockoutObservable<any> = valueAccessor();
-                value(suggestion);
-            } else {
-                valueAccessor()(suggestion);
+            if (!!options.value) {
+                options.value(suggestion);
+            } 
+            if (!!options.change) {
+                options.change(suggestion);
             }
         });
     },
@@ -86,17 +73,21 @@ knockout.bindingHandlers["typeahead"] = {
      * @param {KnockoutAllBindingsAccessor} allBindingsAccessor A JavaScript object that you can use to access all the model values bound to this DOM element.
      */
     update: (element: any, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor) => {
-        if (knockout.isObservable(valueAccessor())) {
+
+        // Retrieves the options from the parameter of the binding
+        var options: { value: KnockoutObservable<string>, change: (value: string) => void, source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void), highlight: boolean, hint: boolean, minLength: number, classNames: Twitter.Typeahead.ClassNames, templates: Twitter.Typeahead.Templates<any>, async: boolean, name: string, limit: number, display: string | ((obj: any) => string) } = <{ value: KnockoutObservable<string>, change: (value: string) => void, source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void), highlight: boolean, hint: boolean, minLength: number, classNames: Twitter.Typeahead.ClassNames, templates: Twitter.Typeahead.Templates<any>, async: boolean, name: string, limit: number, display: string | ((obj: any) => string) }>knockout.utils.unwrapObservable(valueAccessor());
+
+        // Checks whether the binding is updated
+        if (!!options.value) {
             
             // Retrieves the display name based on the display option (which can either be a function that retrieves the name or a path string)
-            var currentValue: any = knockout.unwrap(valueAccessor());
-            var display = allBindingsAccessor.get("display");
-            if (typeof(display) === "string") {
-                for (var part in display.split(".")) {
+            var currentValue = options.value();
+            if (typeof(options.display) === "string") {
+                for (var part in options.display.split(".")) {
                     currentValue = currentValue[part];
                 }
             } else {
-                currentValue = display(currentValue);
+                currentValue = options.display(currentValue);
             }
 
             // Sets the value of the typeahead input to the new value of the binding
