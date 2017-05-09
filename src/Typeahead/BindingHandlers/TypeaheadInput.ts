@@ -23,7 +23,7 @@ knockout.bindingHandlers["typeahead"] = {
     init: (element: any, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor) => {
 
         // Retrieves the options from the parameter of the binding
-        var options: { value: KnockoutObservable<string>, change: (value: string) => void, source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void), highlight: boolean, hint: boolean, minLength: number, classNames: Twitter.Typeahead.ClassNames, templates: Twitter.Typeahead.Templates<any>, async: boolean, name: string, limit: number, display: string | ((obj: any) => string) } = <{ value: KnockoutObservable<string>, change: (value: string) => void, source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void), highlight: boolean, hint: boolean, minLength: number, classNames: Twitter.Typeahead.ClassNames, templates: Twitter.Typeahead.Templates<any>, async: boolean, name: string, limit: number, display: string | ((obj: any) => string) }>knockout.utils.unwrapObservable(valueAccessor());
+        var options: TypeaheadInputOptions = <TypeaheadInputOptions>knockout.utils.unwrapObservable(valueAccessor());
 
         // Prevents the input from which the typeahead is created from autocompleting itself
         var typeaheadInput = jquery(element);
@@ -100,3 +100,69 @@ knockout.bindingHandlers["typeahead"] = {
         }
     }
 };
+
+/**
+ * Represents an interface for the options that can be passed to the TypeaheadInput binding handler.
+ */
+interface TypeaheadInputOptions {
+
+    /**
+     * The value to which the binding handler is bound.
+     */
+    value: KnockoutObservable<string>;
+
+    /**
+     * The event handler that is invoked, when the value has changed.
+     */
+    change: (value: string) => void;
+
+    /**
+     * The Bloodhound suggestion engine that is to be used.
+     */
+    source: Bloodhound<any> | ((query: string, syncResults: (result: any[]) => void, asyncResults?: (result: any[]) => void) => void);
+
+    /**
+     * Determines whether the selected suggestion should be highlighted.
+     */
+    highlight: boolean;
+
+    /**
+     * Determines whether a hint should be displayed.
+     */
+    hint: boolean;
+
+    /**
+     * Determines the minimum length of text that has to be entered before a suggestion is made.
+     */
+    minLength: number;
+
+    /**
+     * Determines the class names that are to be used by Typeahead.
+     */
+    classNames: Twitter.Typeahead.ClassNames;
+
+    /**
+     * The templates that are used to render suggestions.
+     */
+    templates: Twitter.Typeahead.Templates<any>;
+
+    /**
+     * Determines whether HTTP requests should be made asynchronously.
+     */
+    async: boolean;
+
+    /**
+     * The name of the Typeahead input.
+     */
+    name: string;
+
+    /**
+     * A limit to the number of elements to be displayed.
+     */
+    limit: number;
+
+    /**
+     * A function that formats values to be displayed.
+     */
+    display: string | ((obj: any) => string);
+}
