@@ -1,6 +1,7 @@
 // #region Import Directives
 define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], function (require, exports, jquery, knockout) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     // #endregion
     /**
      * Represents a binding handler for using Twitter typeahead.js and the Bloodhound suggestion engine.
@@ -32,6 +33,10 @@ define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], 
                     display: options.display,
                     templates: options.templates
                 }]);
+            // Signs up for the open event and sets the Typeahead query to the current value of the textbox, this is needed, because otherwise Typeahead clears the value upon blur
+            typeaheadInput.on("typeahead:open", function () {
+                typeaheadInput.typeahead("val", options.value());
+            });
             // Triggers the change event
             typeaheadInput.on("typeahead:autocomplete", function () {
                 typeaheadInput.change();

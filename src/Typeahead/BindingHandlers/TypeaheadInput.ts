@@ -44,11 +44,16 @@ knockout.bindingHandlers["typeahead"] = {
             templates: options.templates
         }]);
 
+        // Signs up for the open event and sets the Typeahead query to the current value of the textbox, this is needed, because otherwise Typeahead clears the value upon blur
+        typeaheadInput.on("typeahead:open", () => {
+             typeaheadInput.typeahead("val", options.value());
+        });
+
         // Triggers the change event
-        typeaheadInput.on("typeahead:autocomplete", function () {
+        typeaheadInput.on("typeahead:autocomplete", () => {
             typeaheadInput.change();
         });
-        typeaheadInput.on("typeahead:cursorchange", function () {
+        typeaheadInput.on("typeahead:cursorchange", () => {
             typeaheadInput.change();
         });
 
