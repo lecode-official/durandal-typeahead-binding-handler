@@ -35,7 +35,7 @@ define(["require", "exports", "jquery", "knockout", "typeahead", "bloodhound"], 
                 }]);
             // Signs up for the open event and sets the Typeahead query to the current value of the textbox, this is needed, because otherwise Typeahead clears the value upon blur
             typeaheadInput.on("typeahead:open", function () {
-                typeaheadInput.typeahead("val", options.value());
+                typeaheadInput.typeahead("val", typeaheadInput.val());
             });
             // Triggers the change event
             typeaheadInput.on("typeahead:autocomplete", function () {
