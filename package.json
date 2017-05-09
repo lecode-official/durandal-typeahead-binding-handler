@@ -2,7 +2,7 @@
   "name": "typescript-typeahead-binding-handler",
   "displayName": "TypeScript typeahead.js Binding Handler",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.1.9",
   "description": "Knockout binding handler for the Twitter typeahead.js and Bloodhound jQuery plugins written in TypeScript.",
   "repository": {
     "type": "git",
