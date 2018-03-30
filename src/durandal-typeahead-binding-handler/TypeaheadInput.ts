@@ -4,6 +4,8 @@
 /// <amd-dependency path="typeahead"/>
 /// <amd-dependency path="bloodhound"/>
 
+/// <reference types="typeahead" />
+
 import jquery = require("jquery");
 import knockout = require("knockout");
 
@@ -46,7 +48,7 @@ knockout.bindingHandlers["typeahead"] = {
 
         // Signs up for the open event and sets the Typeahead query to the current value of the textbox, this is needed, because otherwise Typeahead clears the value upon blur
         typeaheadInput.on("typeahead:open", () => {
-             typeaheadInput.typeahead("val", typeaheadInput.val());
+             typeaheadInput.typeahead("val", <string>typeaheadInput.val());
         });
 
         // Triggers the change event
